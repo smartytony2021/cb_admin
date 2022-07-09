@@ -5,6 +5,8 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <language-select class="right-menu-item hover-effect"/>
+      
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
@@ -27,19 +29,23 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+
+
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import LanguageSelect from '@/components/LanguageSelect'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    LanguageSelect
   },
   computed: {
     ...mapGetters([

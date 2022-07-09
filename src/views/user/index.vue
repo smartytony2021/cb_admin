@@ -13,17 +13,17 @@
       >
         <el-table-column
           prop="id"
-          label="日期"
+          :label="$t('member.list.table.id')"
           width="180"
         />
         <el-table-column
           prop="username"
-          label="姓名"
+          :label="$t('member.list.table.username')"
           width="180"
         />
         <el-table-column
           prop="avatar"
-          label="地址"
+          :label="$t('member.list.table.avatar')"
         />
       </el-table>
     </template>
