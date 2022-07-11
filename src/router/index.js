@@ -51,27 +51,49 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: 'dashboard.menu', icon: 'dashboard' }
     }]
   },
 
   {
-    path: '/user',
+    path: '/bet',
     component: Layout,
-    redirect: '/user/index',
-    name: 'user',
+    redirect: '/bet/index',
+    name: 'bet',
+    meta: { title: 'bet.menu', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'bet',
+        name: 'Bet',
+        component: () => import('@/views/bet'),
+        meta: { title: 'bet.lottery.menu', icon: 'table' }
+      },
+      {
+        path: 'draw',
+        name: 'Draw',
+        component: () => import('@/views/memberFlow'),
+        meta: { title: 'bet.draw.menu', icon: 'tree' }
+      }
+    ]
+  },
+
+  {
+    path: '/member',
+    component: Layout,
+    redirect: '/member/index',
+    name: 'member',
     meta: { title: 'member.menu', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'index',
-        name: 'Index',
-        component: () => import('@/views/user/index'),
+        path: 'member',
+        name: 'Member',
+        component: () => import('@/views/member'),
         meta: { title: 'member.list.menu', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/user/flow'),
+        path: 'flow',
+        name: 'Flow',
+        component: () => import('@/views/memberFlow'),
         meta: { title: 'member.flow.menu', icon: 'tree' }
       }
     ]

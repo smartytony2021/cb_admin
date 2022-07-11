@@ -2,18 +2,27 @@
   <div class="app-container">
     <!-- 搜索框 - start -->
     <el-form ref="form" :model="params" :inline="true" size="mini">
-      <el-form-item :label="$t('form.username')">
+      <el-form-item>
         <el-input v-model="params.username" :placeholder="$t('placeholder.username')" />
       </el-form-item>
-      <el-form-item :label="$t('form.username')">
+      <el-form-item>
         <el-date-picker
-          v-model="value2"
+          v-model="params.start"
           type="date"
-          :placeholder="$t('placeholder.datePicker')"
+          :placeholder="$t('placeholder.dateRange.start')"
+          size="mini"
+        />
+        -
+        <el-date-picker
+          v-model="params.end"
+          type="date"
+          :placeholder="$t('placeholder.dateRange.end')"
+          size="mini"
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">{{ $t('button.search') }}</el-button>
+        <el-button type="primary" @click="fetchData">{{ $t('button.search') }}</el-button>
+        <el-button type="info" @click="onSubmit">{{ $t('button.add') }}</el-button>
       </el-form-item>
     </el-form>
     <!-- 搜索框 - end -->
@@ -23,23 +32,26 @@
       <el-table
         :data="list"
         style="width: 100%"
+        size="mini"
       >
         <el-table-column
           prop="id"
           :label="$t('member.list.table.id')"
-          width="180"
         />
         <el-table-column
           prop="username"
           :label="$t('member.list.table.username')"
-          width="180"
         />
         <el-table-column
-          prop="avatar"
-          :label="$t('member.list.table.avatar')"
+          prop="money"
+          :label="$t('member.list.table.money')"
+        />
+        <el-table-column
+          prop="createTime"
+          :label="$t('member.list.table.createTime')"
         />
 
-        <el-table-column align="center" label="Actions" min-width="80">
+        <el-table-column align="center" :label="$t('member.list.table.operate')">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="createOrUpdate(scope.row.id)">
               {{ $t('button.edit') }}
@@ -50,43 +62,32 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <!-- 分页 - start -->
-      <pagination v-show="total>0" :total="total" :page.sync="params.current" :limit.sync="params.size" @pagination="fetchData" />
-      <!-- 分页 - end -->
-
     </template>
     <!-- 列表 - end -->
 
+    <!-- 分页 - start -->
+    <pagination v-show="total>0" :total="total" :page.sync="params.current" :limit.sync="params.size" @pagination="fetchData" />
+    <!-- 分页 - end -->
+
     <!-- 弹框(添加/修改) - start -->
-    <el-dialog v-if="dialogCreateOrUpdateVisible" :title="$t('global.operation')" :visible.sync="dialogCreateOrUpdateVisible">
-      <create-or-update :id="id" />
+    <el-dialog v-if="dialogVisible" :title="$t('global.operation')" :visible.sync="dialogVisible">
+      <create-or-update :id="id" @cancel="dialogVisible = false"/>
     </el-dialog>
     <!-- 弹框(添加/修改) - end -->
   </div>
 </template>
 
 <script>
-import { getUserList } from '@/api/user'
+import api from '@/api/index'
 import CreateOrUpdate from './components/CreateOrUpdate'
 import Pagination from '@/components/Pagination'
 
 export default {
   components: { Pagination, CreateOrUpdate },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
   data() {
     return {
       id: 0,
-      dialogCreateOrUpdateVisible: false,
+      dialogVisible: false,
       total: 0,
       list: null,
       listLoading: true,
@@ -94,34 +95,29 @@ export default {
         current: 1,
         size: 10,
         username: '',
-        region: ''
-      },
-      value2: ''
+        start: '',
+        end: ''
+      }
     }
   },
   created() {
     this.fetchData()
-    console.log(this.$i18n.locale)
   },
   methods: {
     fetchData() {
       this.listLoading = true
-      getUserList(this.params).then(response => {
+      api.member.getList(this.params).then(response => {
         console.log(response)
         this.list = response.data.records
         this.total = response.data.total
         this.listLoading = false
       })
     },
-    switchLanguage(language) {
-      this.$store.dispatch('app/setLanguage', language)
-      window.location.reload()
-    },
     onSubmit() {
       console.log(111)
     },
     createOrUpdate(id) {
-      this.dialogCreateOrUpdateVisible = true
+      this.dialogVisible = true
       this.id = id
       console.log(id)
     }
